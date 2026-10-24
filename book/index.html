@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Find a Time</title>
+<!-- Everything this page shows comes from the part of the link after "#", which browsers never send anywhere.
+     It makes no network requests. Picking a time opens your own email app with a short request. -->
+<style>
+:root{--bg:#f2f2f7;--card:#fff;--label:#1c1c1e;--label2:rgba(60,60,67,.6);--sep:rgba(60,60,67,.14);--tint:#1f74ff;--tint-soft:#e8f1ff;--yolk:#ffc21b;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--label:#fff;--label2:rgba(235,235,245,.6);--sep:rgba(84,84,88,.6);--tint:#0a84ff;--tint-soft:#0f2747}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--label);font:17px/1.4 var(--font);-webkit-font-smoothing:antialiased}
+main{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 28px) 16px calc(env(safe-area-inset-bottom) + 40px)}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.yolk{width:46px;height:46px;flex:none}
+h1{font-size:28px;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--label2);font-size:15px;margin:8px 0 22px}
+.days{display:flex;gap:8px;overflow-x:auto;padding:2px 0 14px;scrollbar-width:none}.days::-webkit-scrollbar{display:none}
+.day{flex:0 0 auto;min-width:62px;border:0;border-radius:14px;background:var(--card);color:var(--label);padding:9px 10px;font:inherit;cursor:pointer;text-align:center}
+.day small{display:block;font-size:12px;color:var(--label2);text-transform:uppercase;letter-spacing:.03em}
+.day b{font-size:20px;font-weight:600}
+.day.on{background:var(--tint);color:#fff}.day.on small{color:rgba(255,255,255,.8)}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;background:var(--card);border-radius:16px;padding:12px}
+.slot{border:1px solid var(--sep);background:none;color:var(--tint);border-radius:11px;padding:11px 0;font:600 16px var(--font);cursor:pointer}
+.slot.on{background:var(--tint);color:#fff;border-color:var(--tint)}
+.none{color:var(--label2);text-align:center;padding:26px 8px;background:var(--card);border-radius:16px}
+form{margin-top:18px;background:var(--card);border-radius:16px;padding:6px 16px 16px}
+label{display:block;font-size:13px;color:var(--label2);margin:12px 0 4px}
+input,textarea{width:100%;border:1px solid var(--sep);border-radius:11px;padding:11px 12px;font:17px var(--font);background:none;color:var(--label);outline:none}
+input:focus,textarea:focus{border-color:var(--tint)}
+textarea{min-height:70px;resize:vertical}
+.go{margin-top:16px;width:100%;border:0;border-radius:14px;background:var(--tint);color:#fff;font:600 17px var(--font);padding:15px;cursor:pointer}
+.go:disabled{opacity:.4}
+.done{background:var(--card);border-radius:16px;padding:22px 18px;text-align:center}
+.done h2{margin:6px 0 6px;font-size:22px}.done p{color:var(--label2);margin:6px 0}
+pre{white-space:pre-wrap;text-align:left;background:var(--bg);border-radius:12px;padding:12px;font:14px/1.45 ui-monospace,Menlo,monospace;user-select:all}
+.tz{color:var(--label2);font-size:13px;text-align:center;margin-top:16px}
+.lnk{background:none;border:0;color:var(--tint);font:inherit;cursor:pointer;padding:6px}
+</style>
+</head>
+<body>
+<main id="app"><p class="sub">Loading…</p></main>
+<script>
+"use strict";
+const $=s=>document.querySelector(s), app=$("#app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const YOLK=`<svg class="yolk" viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="g" cx=".36" cy=".28" r=".9"><stop offset="0" stop-color="#fff0b8"/><stop offset=".42" stop-color="#ffd84d"/><stop offset=".85" stop-color="#ffc21b"/><stop offset="1" stop-color="#f2a800"/></radialGradient></defs><path d="M60 20C89 20 107 43 107 69C107 93 87 105 60 105C33 105 13 93 13 69C13 43 31 20 60 20Z" fill="url(#g)"/><ellipse cx="48.5" cy="62" rx="4.6" ry="7.2" fill="#0e1424"/><ellipse cx="71.5" cy="62" rx="4.6" ry="7.2" fill="#0e1424"/><path d="M55.5 73q4.5 4.5 9 0" stroke="#0e1424" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>`;
+function fail(msg){app.innerHTML=`<div class="top">${YOLK}<h1>Find a time</h1></div><p class="sub">${esc(msg)}</p>`;}
+
+async function read(){
+  const h=location.hash.slice(1); if(!h) throw new Error("This link is incomplete. Ask for a new one.");
+  const b64=h.replace(/-/g,"+").replace(/_/g,"/"), bin=atob(b64+"===".slice((b64.length+3)%4));
+  const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));
+  const stream=new Response(bytes).body.pipeThrough(new DecompressionStream("deflate"));
+  const d=JSON.parse(await new Response(stream).text());
+  if(d.v!==1) throw new Error("This link is from a newer version. Ask for a new one.");
+  return d;
+}
+
+function slots(d){
+  const M=60000, s=d.s*M, end=(d.s+d.x)*M, step=Math.min(30,d.m)*M, len=d.m*M;
+  const raw=(d.b?d.b.split(","):[]).map(x=>parseInt(x,36));
+  const busy=[]; for(let i=0;i+1<raw.length;i+=2) busy.push([s+raw[i]*M,s+raw[i+1]*M]);
+  const tz=d.tz||undefined, fmt=new Intl.DateTimeFormat("en-US",{timeZone:tz,hour12:false,hour:"2-digit",minute:"2-digit",weekday:"short"});
+  const ownerTime=t=>{const p=Object.fromEntries(fmt.formatToParts(new Date(t)).map(x=>[x.type,x.value]));return {min:(+p.hour%24)*60+(+p.minute),wd:p.weekday};};
+  const out=[]; let t=Math.max(s,Math.ceil((Date.now()+60*M)/(30*M))*30*M);
+  for(;t+len<=end;t+=step){
+    const a=ownerTime(t), b=a.min+d.m;
+    if(a.min<d.h[0]*60||b>d.h[1]*60) continue;
+    if(!d.w&&(a.wd==="Sat"||a.wd==="Sun")) continue;
+    if(busy.some(([x,y])=>x<t+len&&y>t)) continue;
+    out.push(t);
+  }
+  return out;
+}
+
+let D, S=[], day="", pick=0;
+const dkey=t=>new Date(t).toDateString();
+function draw(){
+  const who=D.n||"them";
+  if(Date.now()>(D.s+D.x)*60000) return fail(`This link has expired. Ask ${who} for a new one.`);
+  const days=[...new Set(S.map(dkey))];
+  if(!day||!days.includes(day)) day=days[0]||"";
+  const today=S.filter(t=>dkey(t)===day);
+  const tf=t=>new Date(t).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+  app.innerHTML=`<div class="top">${YOLK}<h1>Find a time with ${esc(who)}</h1></div>
+    <p class="sub">${D.m} minutes. Pick a time that works for you.</p>
+    ${days.length?`<div class="days">${days.map(k=>{const x=new Date(k);return `<button class="day ${k===day?"on":""}" data-day="${esc(k)}"><small>${x.toLocaleDateString(undefined,{weekday:"short"})}</small><b>${x.getDate()}</b></button>`;}).join("")}</div>
+      <div class="slots">${today.map(t=>`<button class="slot ${t===pick?"on":""}" data-t="${t}">${tf(t)}</button>`).join("")}</div>`
+      :`<div class="none">No free times left on this link. Ask ${esc(who)} for a new one.</div>`}
+    ${pick?`<form id="f"><label for="nm">Your name</label><input id="nm" autocomplete="name" maxlength="60" required>
+      <label for="nt">Anything to add? (optional)</label><textarea id="nt" maxlength="500"></textarea>
+      <button class="go" id="go">Request ${esc(new Date(pick).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"}))}, ${esc(tf(pick))}</button></form>`:""}
+    <p class="tz">Times are in your time zone (${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)}).</p>`;
+  app.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{day=b.dataset.day;pick=0;draw();});
+  app.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{pick=+b.dataset.t;const nm=$("#nm")?.value||"";draw();const n=$("#nm");if(n){n.value=nm;n.focus();}});
+  const f=$("#f"); if(f) f.onsubmit=e=>{e.preventDefault();send();};
+}
+function send(){
+  const name=$("#nm").value.replace(/[\r\n]+/g," ").trim().slice(0,60), note=$("#nt").value.trim().slice(0,500);
+  if(!name) return $("#nm").focus();
+  const when=new Date(pick).toLocaleString(undefined,{weekday:"long",month:"long",day:"numeric",hour:"numeric",minute:"2-digit",timeZoneName:"short"});
+  const subject=`Meeting request: ${name} · ${new Date(pick).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}`;
+  const body=`Hi${D.n?" "+D.n:""},\n\n${name} would like to meet on ${when} (${D.m} minutes).${note?"\n\n"+note:""}\n\nSent from your free-times link.\nYK-BOOK v1 k=${D.k} at=${Math.round(pick/1000)} d=${D.m} name=${name}\n`;
+  location.href=`mailto:${encodeURIComponent(D.e).replace(/%40/g,"@")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  app.innerHTML=`<div class="top">${YOLK}<h1>Almost done</h1></div>
+    <div class="done"><h2>Tap Send in your email</h2><p>Once it's sent, ${esc(D.n||"they")} will get it and the time goes on their calendar.</p>
+    <p style="margin-top:16px">Email didn't open? Send this to <b>${esc(D.e)}</b>:</p><pre>${esc(subject)}\n\n${esc(body)}</pre>
+    <button class="lnk" id="back">Pick another time</button></div>`;
+  $("#back").onclick=()=>{pick=0;draw();};
+}
+read().then(d=>{D=d;S=slots(d);draw();}).catch(e=>fail(e.message||"This link doesn't work. Ask for a new one."));
+</script>
+</body>
+</html>
