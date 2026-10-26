@@ -1253,6 +1253,7 @@ button,input,select,textarea{font-family:inherit}
 /* finale: GitHub and the upcoming paper sit beside Download, quieter than it */
 .fin .cta{align-items:center}
 .ico-btn{width:48px;padding:0}.ico-btn svg{width:20px;height:20px}
+.soon{align-self:center;font:600 12px/1 var(--font);letter-spacing:.02em;padding:6px 10px;border-radius:999px;background:var(--mist);color:var(--ink2);white-space:nowrap}
 .btn.paper{cursor:default;color:var(--ink2);gap:8px}.btn.paper svg{width:18px;height:18px}
 .btn.paper em{font-style:normal;font:600 11px/1 var(--font);letter-spacing:.04em;text-transform:uppercase;padding:4px 7px;border-radius:8px;background:var(--mist);color:var(--ink3)}
 
@@ -1573,6 +1574,8 @@ const DOCS="";                     // e.g. a docs site; falls back to the repo's
 const SITE_LINKS={"a.gh":"","a.gh-sec":"/blob/main/SECURITY.md","a.lk-contrib":"/blob/main/CONTRIBUTING.md","a.lk-lic":"/blob/main/LICENSE",
   "a.lk-changes":"/releases","a.lk-readme":"#readme","a.lk-bug":"/issues/new?template=bug.yml","a.lk-idea":"/issues/new?template=idea.yml","a.lk-coc":"/blob/main/CODE_OF_CONDUCT.md","a.lk-notice":"/blob/main/NOTICE","#ver":"/releases","[data-k=roadmap]":"/blob/main/docs/ROADMAP.md","a.lk-docs":"/tree/main/docs"};
 if(REPO)for(const [sel,path] of Object.entries(SITE_LINKS))document.querySelectorAll(sel).forEach(a=>a.href=REPO+path);
+// until then a link that would go to GitHub stays put (only the menu's "Open source" scrolls to its section)
+else document.addEventListener("click",e=>{const a=e.target.closest('a[href="#open"]');if(a&&!a.classList.contains("lk-cb"))e.preventDefault();},true);
 if(DOCS)document.querySelectorAll("a.lk-docs").forEach(a=>a.href=DOCS);
 if(CHAT)document.querySelectorAll("a.chat,a.lk-chat").forEach(a=>{a.href=CHAT;a.hidden=false;});
 // stars, latest version and contributors come from GitHub once the repo is public; until then the page shows placeholders
@@ -1586,8 +1589,10 @@ if(REPO){const api=REPO.replace("https://github.com/","https://api.github.com/re
     const people=list.filter(c=>c.type!=="Bot");
     cbrow.innerHTML=people.map(c=>`<a href="${c.html_url}" title="${c.login}"><img src="${c.avatar_url}&s=72" alt="${c.login}" loading="lazy" width="36" height="36"></a>`).join("")+youLink;
     document.getElementById("cbn").textContent=people.length+(people.length===1?" person":" people")+" so far";}).catch(()=>{});}
-document.querySelectorAll("a.dl").forEach(a=>{if(DMG)a.href=DMG;else a.addEventListener("click",e=>{e.preventDefault();
-  document.getElementById("toast").textContent="The download opens with Yolkee's first public release.";document.getElementById("get").scrollIntoView({behavior:RM?"auto":"smooth"});});});
+document.querySelectorAll("a.dl").forEach(a=>{if(DMG)a.href=DMG;else a.addEventListener("click",e=>{e.preventDefault();});});
+// until launch, the main buttons say so right beside them
+if(!DMG||!REPO)document.querySelectorAll((DMG?"":".cta a.dl,")+(REPO?"":".cta a.gh:not(.ico-btn),a.sf-gh")).forEach(a=>{if(a.nextElementSibling?.classList.contains("soon"))return;
+  a.insertAdjacentHTML("afterend",'<span class="soon">Coming soon</span>');});
 
 // ---- the sky: the visitor's own time of day, like the app's Today card ----
 const SKY=[["dawn","Dawn"],["morning","Morning"],["day","Day"],["golden","Golden hour"],["dusk","Dusk"],["night","Night"]];
