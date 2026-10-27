@@ -40,6 +40,18 @@ textarea{min-height:70px;resize:vertical}
 pre{white-space:pre-wrap;text-align:left;background:var(--bg);border-radius:12px;padding:12px;font:14px/1.45 ui-monospace,Menlo,monospace;user-select:all}
 .tz{color:var(--label2);font-size:13px;text-align:center;margin-top:16px}
 .lnk{background:none;border:0;color:var(--tint);font:inherit;cursor:pointer;padding:6px}
+/* a group link: everyone marks the times that work (like when-to-meet); busy says only "Busy" */
+.grid{overflow-x:auto;background:var(--card);border-radius:16px;padding:10px 10px 12px;-webkit-overflow-scrolling:touch}
+.grid table{border-collapse:separate;border-spacing:3px;margin:0 auto}
+.grid th{font:600 12px var(--font);color:var(--label2);padding:2px 4px;white-space:nowrap}.grid th b{display:block;font-size:16px;color:var(--label)}
+.grid td.tm{font:500 11px var(--font);color:var(--label2);text-align:right;padding-right:6px;white-space:nowrap;position:sticky;left:0;background:var(--card)}
+.cell{width:46px;height:30px;border:0;border-radius:7px;background:var(--tint-soft);cursor:pointer;padding:0;touch-action:manipulation}
+.cell.on{background:#34c759}.cell.busy{background:repeating-linear-gradient(135deg,var(--bg) 0 5px,transparent 5px 10px);cursor:not-allowed;
+  font:500 9px var(--font);color:var(--label2)}
+.cell.none{visibility:hidden}
+.legend{display:flex;gap:14px;justify-content:center;margin:10px 0 0;font-size:13px;color:var(--label2)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px;background:#34c759}
+.legend i.b{background:repeating-linear-gradient(135deg,var(--sep) 0 3px,transparent 3px 6px)}
 </style>
 </head>
 <body>
@@ -78,6 +90,65 @@ function slots(d){
   return out;
 }
 
+function cells(d){   // every slot in the window, busy ones marked (a group link shows them, as "Busy")
+  const M=60000, s=d.s*M, end=(d.s+d.x)*M, step=Math.min(30,d.m)*M, len=d.m*M;
+  const raw=(d.b?d.b.split(","):[]).map(x=>parseInt(x,36));
+  const busy=[]; for(let i=0;i+1<raw.length;i+=2) busy.push([s+raw[i]*M,s+raw[i+1]*M]);
+  const tz=d.tz||undefined, fmt=new Intl.DateTimeFormat("en-US",{timeZone:tz,hour12:false,hour:"2-digit",minute:"2-digit",weekday:"short"});
+  const ownerTime=t=>{const p=Object.fromEntries(fmt.formatToParts(new Date(t)).map(x=>[x.type,x.value]));return {min:(+p.hour%24)*60+(+p.minute),wd:p.weekday};};
+  const out=[]; let t=Math.max(s,Math.ceil((Date.now()+60*M)/(30*M))*30*M);
+  for(;t+len<=end;t+=step){const a=ownerTime(t);
+    if(a.min<d.h[0]*60||a.min+d.m>d.h[1]*60) continue;
+    if(!d.w&&(a.wd==="Sat"||a.wd==="Sun")) continue;
+    out.push({t,busy:busy.some(([x,y])=>x<t+len&&y>t)});}
+  return out;
+}
+const MINE=new Set();
+function drawGroup(){
+  const who=D.n||"them";
+  if(Date.now()>(D.s+D.x)*60000) return fail(`This link has expired. Ask ${who} for a new one.`);
+  const C=cells(D), days=[...new Set(C.map(c=>dkey(c.t)))];
+  const tf=t=>new Date(t).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+  const rows=[...new Set(C.map(c=>{const x=new Date(c.t);return x.getHours()*60+x.getMinutes();}))].sort((a,b)=>a-b);
+  const at=(k,m)=>C.find(c=>dkey(c.t)===k&&new Date(c.t).getHours()*60+new Date(c.t).getMinutes()===m);
+  app.innerHTML=`<div class="top">${YOLK}<h1>${esc(D.t||"Find a time")}</h1></div>
+    <p class="sub">With ${esc(who)}, ${D.m} minutes. Tap every time that works for you.</p>
+    ${C.some(c=>!c.busy)?`<div class="grid"><table><tr><th></th>${days.map(k=>{const x=new Date(k);return `<th>${x.toLocaleDateString(undefined,{weekday:"short"})}<b>${x.getDate()}</b></th>`;}).join("")}</tr>
+      ${rows.map(m=>`<tr><td class="tm">${m%60?"":esc(tf(new Date(2000,0,1,Math.floor(m/60),m%60)))}</td>${days.map(k=>{const c=at(k,m);
+        return `<td><button type="button" class="cell ${!c?"none":c.busy?"busy":MINE.has(c.t)?"on":""}" ${c&&!c.busy?`data-c="${c.t}" aria-pressed="${MINE.has(c.t)}"`:"disabled"}
+          aria-label="${c?esc(new Date(c.t).toLocaleString(undefined,{weekday:"short",hour:"numeric",minute:"2-digit"})):""}">${c?.busy?"Busy":""}</button></td>`;}).join("")}</tr>`).join("")}</table></div>
+      <div class="legend"><span><i></i>Works for you</span><span><i class="b"></i>${esc(who)} is busy</span></div>
+      <form id="f"><label for="nm">Your name</label><input id="nm" autocomplete="name" maxlength="60" required>
+      <button class="go" id="go" ${MINE.size?"":"disabled"}>${MINE.size?`Send ${MINE.size} time${MINE.size>1?"s":""}`:"Tap the times that work"}</button></form>`
+      :`<div class="none">No free times left on this link. Ask ${esc(who)} for a new one.</div>`}
+    <p class="tz">Times are in your time zone (${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)}).</p>`;
+  let down=null;   // drag across with a mouse to mark many at once
+  app.querySelectorAll("[data-c]").forEach(b=>{const t=+b.dataset.c;
+    const set=on=>{on?MINE.add(t):MINE.delete(t);b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);
+      const g=$("#go");if(g){g.disabled=!MINE.size;g.textContent=MINE.size?`Send ${MINE.size} time${MINE.size>1?"s":""}`:"Tap the times that work";}};
+    b.onclick=e=>{if(e.detail===0||!b.dataset.dragged)set(!MINE.has(t));delete b.dataset.dragged;};
+    b.onpointerdown=e=>{if(e.pointerType!=="mouse")return;down=!MINE.has(t);set(down);b.dataset.dragged=1;};
+    b.onpointerenter=()=>{if(down!==null){set(down);b.dataset.dragged=1;}};});
+  addEventListener("pointerup",()=>{down=null;},{once:true});
+  const nm=$("#nm");if(nm)nm.value=sessionStorage.getItem("yk-name")||"";
+  const f=$("#f"); if(f) f.onsubmit=e=>{e.preventDefault();sendGroup();};
+}
+function sendGroup(){
+  const name=$("#nm").value.replace(/[\r\n]+/g," ").trim().slice(0,60);
+  if(!name) return $("#nm").focus();
+  try{sessionStorage.setItem("yk-name",name);}catch{}
+  const ts=[...MINE].sort((a,b)=>a-b), b36=n=>n.toString(36);
+  const byDay={};ts.forEach(t=>{const k=new Date(t).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
+    (byDay[k]=byDay[k]||[]).push(new Date(t).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"}));});
+  const subject=`${D.t||"Finding a time"}: ${name}'s times`;
+  const body=`Hi${D.n?" "+D.n:""},\n\nThese times work for ${name} (${D.m} minutes):\n${Object.entries(byDay).map(([k,v])=>`${k}: ${v.join(", ")}`).join("\n")}\n\nSent from your group link.\nYK-POLL v1 k=${D.k} d=${D.m} at=${ts.map(t=>b36(Math.round(t/60000)-D.s)).join(".")} name=${name}\n`;
+  location.href=`mailto:${encodeURIComponent(D.e).replace(/%40/g,"@")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  app.innerHTML=`<div class="top">${YOLK}<h1>Almost done</h1></div>
+    <div class="done"><h2>Tap Send in your email</h2><p>${esc(D.n||"They")} will see the time that works for everyone and send the invite.</p>
+    <p style="margin-top:16px">Email didn't open? Send this to <b>${esc(D.e)}</b>:</p><pre>${esc(subject)}\n\n${esc(body)}</pre>
+    <button class="lnk" id="back">Change my times</button></div>`;
+  $("#back").onclick=()=>drawGroup();
+}
 let D, S=[], day="", pick=0;
 const dkey=t=>new Date(t).toDateString();
 function draw(){
@@ -113,7 +184,7 @@ function send(){
     <button class="lnk" id="back">Pick another time</button></div>`;
   $("#back").onclick=()=>{pick=0;draw();};
 }
-read().then(d=>{D=d;S=slots(d);draw();}).catch(e=>fail(e.message||"This link doesn't work. Ask for a new one."));
+read().then(d=>{D=d;if(d.g)return drawGroup();S=slots(d);draw();}).catch(e=>fail(e.message||"This link doesn't work. Ask for a new one."));
 </script>
 </body>
 </html>
