@@ -1568,7 +1568,7 @@ R.classList.toggle("rb",rb);if(rb){R.style.setProperty("--p",dk?"64,156,255":"10
 const RM=!!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 // ---- links that open at launch: set these two and every button follows ----
 const REPO="";                     // e.g. https://github.com/yolkee/yolkee
-const DMG="";                      // e.g. REPO + "/releases/latest/download/Yolkee.dmg"
+const DMG="";                      // e.g. REPO + "/releases/latest/download/Yolkee.dmg": the colour you pick is the one you get
 const CHAT="";                     // e.g. a Discord invite; the icon and footer link stay hidden until set
 const DOCS="";                     // e.g. a docs site; falls back to the repo's docs/ folder
 const SITE_LINKS={"a.gh":"","a.gh-sec":"/blob/main/SECURITY.md","a.lk-contrib":"/blob/main/CONTRIBUTING.md","a.lk-lic":"/blob/main/LICENSE",
@@ -1589,7 +1589,9 @@ if(REPO){const api=REPO.replace("https://github.com/","https://api.github.com/re
     const people=list.filter(c=>c.type!=="Bot");
     cbrow.innerHTML=people.map(c=>`<a href="${c.html_url}" title="${c.login}"><img src="${c.avatar_url}&s=72" alt="${c.login}" loading="lazy" width="36" height="36"></a>`).join("")+youLink;
     document.getElementById("cbn").textContent=people.length+(people.length===1?" person":" people")+" so far";}).catch(()=>{});}
-document.querySelectorAll("a.dl").forEach(a=>{if(DMG)a.href=DMG;else a.addEventListener("click",e=>{e.preventDefault();});});
+const dmgFor=c=>c&&c!=="rainbow"?DMG.replace(/Yolkee\.dmg$/,`Yolkee-${c}.dmg`):DMG;   // one download per colour (release_colors.py)
+document.querySelectorAll("a.dl").forEach(a=>{if(DMG){a.href=dmgFor(pick);a.addEventListener("click",()=>{a.href=dmgFor(pick);});}
+  else a.addEventListener("click",e=>{e.preventDefault();});});
 // until launch, the main buttons say so right beside them
 if(!DMG||!REPO)document.querySelectorAll((DMG?"":".cta a.dl,")+(REPO?"":".cta a.gh:not(.ico-btn),a.sf-gh")).forEach(a=>{if(a.nextElementSibling?.classList.contains("soon"))return;
   a.insertAdjacentHTML("afterend",'<span class="soon">Coming soon</span>');});
