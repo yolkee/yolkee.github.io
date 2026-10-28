@@ -32,25 +32,25 @@ html{background:var(--paper)}
 body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .light{position:fixed;inset:0 0 auto;height:620px;z-index:-1;pointer-events:none;opacity:var(--light);
   background:radial-gradient(60% 55% at 15% 10%,var(--t1),transparent 70%),radial-gradient(55% 50% at 90% 40%,var(--t2),transparent 70%),linear-gradient(180deg,var(--t3),var(--paper) 85%)}
-.bar,.wrap,.promo,.agents{max-width:1080px;margin:0 auto;padding-left:16px;padding-right:16px}
+.bar,.wrap,.agents{max-width:1080px;margin:0 auto;padding-left:16px;padding-right:16px}
 .bar{padding-top:calc(env(safe-area-inset-top) + 18px);display:flex;align-items:center;justify-content:space-between}
 .wm{display:flex;align-items:center;gap:8px;font:600 18px/1 var(--font);letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
 .wm .yolk{width:26px;height:26px;filter:none}
 .bar .get{font:500 14px/1 var(--font);color:var(--ink2);text-decoration:none;padding:9px 14px;border-radius:18px;background:var(--glass);
   box-shadow:inset 0 0 0 1px var(--line);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.wrap{padding-top:30px}
+.wrap{padding-top:22px}
 /* the layout: head and form on the left, the calendar on the right */
-.cols{display:grid;gap:18px;grid-template-areas:"head" "cal" "form"}
-.cols.group{grid-template-areas:"head" "form" "cal"}               /* a group: your name first, then the grid */
-.c-head{grid-area:head}.c-cal{grid-area:cal;min-width:0}.c-form{grid-area:form}
+.cols{display:grid;gap:18px;grid-template-areas:"head" "cal" "form" "promo"}
+.cols.group{grid-template-areas:"head" "form" "cal" "promo"}       /* a group: your name first, then the grid */
+.c-head{grid-area:head}.c-cal{grid-area:cal;min-width:0}.c-form{grid-area:form}.cols>.promo{grid-area:promo}
 @media (min-width:900px){
-  .cols,.cols.group{grid-template-columns:340px minmax(0,1fr);grid-template-areas:"head cal" "form cal";gap:10px 32px;align-items:start}
-  .cols>.c-form{position:sticky;top:20px}
+  .cols,.cols.group{grid-template-columns:340px minmax(0,1fr);grid-template-areas:"head cal" "form cal" "promo cal";grid-template-rows:auto auto 1fr;
+    gap:14px 32px;align-items:start}
   .dock{display:none!important}
 }
 .yolk{width:54px;height:54px;flex:none;filter:drop-shadow(0 10px 16px rgba(242,168,0,.28))}
 .yolk .gaze{transition:transform .12s ease-out}
-h1{font:500 clamp(28px,5.6vw,38px)/1.1 var(--font);margin:14px 0 0;letter-spacing:-.025em;text-wrap:balance}
+h1{font:500 clamp(28px,5.6vw,36px)/1.1 var(--font);margin:4px 0 0;letter-spacing:-.025em;text-wrap:balance}
 .sub{color:var(--ink2);font-size:17px;margin:10px 0 0;text-wrap:pretty}
 .meta{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
 .meta span{display:inline-flex;align-items:center;gap:6px;font:500 14px/1 var(--font);color:var(--ink2);padding:8px 12px;border-radius:16px;
@@ -75,13 +75,17 @@ h1{font:500 clamp(28px,5.6vw,38px)/1.1 var(--font);margin:14px 0 0;letter-spacin
 .slot:hover{background:rgba(var(--p),.16)}.slot:active{transform:scale(.97)}
 .slot.on{background:var(--accent);color:#fff}
 .none{color:var(--ink2);text-align:center;padding:30px 16px}
-form{padding:6px 18px 18px}
-label{display:block;font:500 13px/1 var(--font);color:var(--ink2);margin:16px 2px 8px}
-input,textarea{width:100%;border:0;border-radius:14px;padding:13px 14px;font:17px var(--font);background:var(--card);color:var(--ink);outline:none;
+form{padding:4px 16px 16px}
+label{display:block;font:500 13px/1 var(--font);color:var(--ink2);margin:14px 2px 7px}
+input,textarea{width:100%;border:0;border-radius:14px;padding:11px 14px;font:17px var(--font);background:var(--card);color:var(--ink);outline:none;
   box-shadow:inset 0 0 0 1px var(--line)}
 input:focus,textarea:focus{box-shadow:inset 0 0 0 2px var(--accent)}
-textarea{min-height:76px;resize:vertical}
-.go{margin-top:16px;width:100%;height:52px;border:0;border-radius:26px;background:var(--ink);color:var(--paper);font:600 17px/1 var(--font);cursor:pointer;
+textarea{min-height:52px;resize:vertical}
+.rl{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}.rl label{margin-bottom:7px}
+.rk{display:flex;background:var(--line);border-radius:10px;padding:2px;margin-bottom:5px}
+.rk button{border:0;background:none;font:500 12.5px/1 var(--font);color:var(--ink2);padding:6px 10px;border-radius:8px;cursor:pointer}
+.rk button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.go{margin-top:14px;width:100%;height:50px;border:0;border-radius:26px;background:var(--ink);color:var(--paper);font:600 17px/1 var(--font);cursor:pointer;
   transition:transform .15s,opacity .2s}
 .go:active{transform:scale(.98)}.go:disabled{opacity:.35;cursor:default}
 .hint{color:var(--ink2);font-size:14px;margin:12px 2px 0;line-height:1.45}
@@ -119,28 +123,33 @@ tr.hr td{padding-top:4px}
 .dock .go{margin:0;flex:1}
 .dock span{font:600 14px/1.25 var(--font);color:var(--ink2);min-width:72px}
 .tz{color:var(--ink3);font-size:13px;margin:14px 2px 0}
-/* what made this page */
-.promo{margin-top:40px}
-.promo .glass{padding:24px 22px 22px;position:relative;overflow:hidden;max-width:720px}
-.promo .glass::before{content:"";position:absolute;inset:-40% -20% auto auto;width:280px;height:280px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,194,27,.28),transparent 70%);pointer-events:none}
-.promo .hd{display:flex;align-items:center;gap:12px}
-.promo .hd .yolk{width:40px;height:40px;filter:none}
-.promo small{display:block;font:500 13px/1 var(--font);color:var(--ink2);margin-bottom:5px}
-.promo h2{margin:0;font:500 22px/1.15 var(--font);letter-spacing:-.02em}
-.promo p{color:var(--ink2);margin:14px 0 0;font-size:16px;line-height:1.5}
-.promo ul{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:9px}
-.promo li{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;line-height:1.4}
-.promo li i{flex:none;width:22px;height:22px;border-radius:8px;display:grid;place-items:center;margin-top:-1px}
-.promo li svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.promo .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:23px;font:500 16px/1 var(--font);
+/* what made this page: small, beside the times */
+.promo{padding:0}
+.promo .glass{padding:16px 16px 14px;position:relative;overflow:hidden}
+.promo .glass::before{content:"";position:absolute;inset:-50% -30% auto auto;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,194,27,.26),transparent 70%);pointer-events:none}
+.promo small{display:block;font:500 12.5px/1 var(--font);color:var(--ink2);margin-bottom:5px}
+.promo h2{margin:0;font:600 17px/1.2 var(--font);letter-spacing:-.015em}
+.promo p{color:var(--ink2);margin:8px 0 0;font-size:14px;line-height:1.45}
+.promo ul{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}
+.promo li{display:flex;gap:8px;align-items:center;font-size:13.5px;line-height:1.3}
+.promo li i{flex:none;width:18px;height:18px;border-radius:6px;display:grid;place-items:center}
+.promo li svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.promo .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 15px;border-radius:19px;font:500 14px/1 var(--font);
   text-decoration:none;transition:transform .15s}
 .btn:active{transform:scale(.97)}
 .btn.main{background:var(--ink);color:var(--paper)}
 .btn.ghost{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
-.btn svg{width:17px;height:17px;fill:currentColor}
-.fine{color:var(--ink3);font-size:13px;margin:16px 2px 0;line-height:1.45}
+.btn svg{width:15px;height:15px;fill:currentColor}
+.fine{color:var(--ink3);font-size:12px;margin:10px 2px 0;line-height:1.4}
+@media (min-width:900px){
+  .grid{max-height:max(380px,calc(100vh - 360px))}
+  .c-cal .promo{margin-top:16px}
+  .c-cal .promo .glass{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 24px;align-items:center;padding:16px 20px}
+  .c-cal .promo .glass>*{grid-column:1}.c-cal .promo .acts{grid-column:2;grid-row:1/span 4;margin:0;flex-direction:column;align-items:stretch}
+  .c-cal .promo p{margin-top:4px}.c-cal .promo ul{display:flex;flex-wrap:wrap;gap:6px 16px}.c-cal .promo .fine{margin-top:8px}
+}
 /* for someone's AI assistant reading this page: what's free and how to answer */
 .agents{margin-top:18px;padding-bottom:calc(env(safe-area-inset-bottom) + 40px)}
 .agents details{color:var(--ink3);font-size:13px}
@@ -161,17 +170,16 @@ tr.hr td{padding-top:4px}
   <a class="get" href="https://yolkee.dev/#get">Get Yolkee</a></header>
 <main id="app" class="wrap"><p class="sub">Loading…</p></main>
 <aside class="promo" aria-label="About Yolkee"><div class="glass">
-  <div class="hd"><span id="prY"></span><div><small id="prWho">This page was made with Yolkee</small><h2>Your own AI assistant, on your Mac</h2></div></div>
-  <p>Yolkee reads your mail and calendar on your own Mac, with the AI you already have, and you answer from your iPhone.
-    <span id="prFound">It found these free times</span> and put only the busy blocks in this link: no titles, places or people.</p>
+  <small id="prWho">Made with Yolkee</small><h2>Your own AI assistant, on your Mac</h2>
+  <p><span id="prFound">Yolkee found these free times</span> and put only the busy blocks in this link: no titles, places or people.</p>
   <ul>
     <li><i style="background:#0a84ff"><svg viewBox="0 0 24 24"><path d="M4 7h16v11H4z M4 7l8 6 8-6"/></svg></i>Sorts your mail and drafts the replies</li>
     <li><i style="background:#bf5af2"><svg viewBox="0 0 24 24"><path d="M5 6h14v13H5z M5 10h14 M9 4v4 M15 4v4"/></svg></i>Finds a time with anyone, and sends the invite</li>
     <li><i style="background:#34c759"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i>Asks you before it sends, buys or pays</li>
   </ul>
   <div class="acts"><a class="btn main" href="https://yolkee.dev/#get"><svg viewBox="0 0 24 24"><path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.3c.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.5-.9-2.5-3.7zM14.1 5.6c.6-.8 1.1-1.9 1-3-1 0-2.1.6-2.8 1.4-.6.7-1.1 1.8-1 2.9 1.1.1 2.1-.5 2.8-1.3z"/></svg>Get Yolkee for Mac</a>
-    <a class="btn ghost" href="https://yolkee.dev">See how it works</a></div>
-  <p class="fine">Free and open source. No account, no Yolkee server. Nothing on this page is sent anywhere.</p>
+    <a class="btn ghost" href="https://yolkee.dev">How it works</a></div>
+  <p class="fine">Free and open source. No account, no Yolkee server.</p>
 </div></aside>
 <section class="agents" aria-label="For AI assistants"><details><summary>For AI assistants</summary><p class="txt" id="agentTxt"></p></details></section>
 <script type="application/json" id="yk-agent">{}</script>
@@ -196,7 +204,7 @@ function meta(){const z=Intl.DateTimeFormat().resolvedOptions().timeZone||"",w=w
 // the sky follows the visitor's time of day, as on yolkee.dev
 (()=>{const h=new Date().getHours()+new Date().getMinutes()/60;
   document.documentElement.dataset.sky=h<5?"night":h<7?"dawn":h<10.5?"morning":h<16?"day":h<18.5?"golden":h<20?"dusk":"night";})();
-function fail(msg){app.innerHTML=`<div class="c-head">${YOLKS()}<h1>Find a time</h1><p class="sub">${esc(msg)}</p></div>`;}
+function fail(msg){app.innerHTML=`<div class="cols"><div class="c-head"><h1>Find a time</h1><p class="sub">${esc(msg)}</p></div></div>`;}
 
 async function read(){
   const h=location.hash.slice(1); if(!h) throw new Error("This link is incomplete. Ask for a new one.");
@@ -229,6 +237,20 @@ const df=(t,o)=>new Date(t).toLocaleDateString(undefined,o||{weekday:"short",mon
 const tzNote=()=>`<p class="tz">Times are in your time zone (${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)}).</p>`;
 const mailto=(subject,body)=>`mailto:${encodeURIComponent(D.e).replace(/%40/g,"@")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
+const REACH=()=>{let k="email",v="";try{k=sessionStorage.getItem("yk-rk")||"email";v=sessionStorage.getItem("yk-rc")||"";}catch{}
+  return `<div class="rl"><label for="rc">How to reach you</label><div class="rk">${[["email","Email"],["tel","Phone"]].map(([x,l])=>`<button type="button" data-rk="${x}" class="${x===k?"on":""}">${l}</button>`).join("")}</div></div>
+    <input id="rc" ${k==="tel"?'type="tel" autocomplete="tel" inputmode="tel" placeholder="+1 555 010 0123"':'type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"'} maxlength="80" required value="${esc(v)}">`;};
+// how to tell them the time: email by default, a phone number if they'd rather; {k, v} or null when it isn't one
+function reach(){const b=app.querySelector(".rk .on"),k=b?b.dataset.rk:"email",v=($("#rc")?.value||"").replace(/[\r\n\s]+/g," ").trim().slice(0,80);
+  if(k==="email"?/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v):(v.match(/\d/g)||[]).length>=7&&/^[+\d()\-. ]+$/.test(v)){try{sessionStorage.setItem("yk-rk",k);sessionStorage.setItem("yk-rc",v);}catch{}return {k,v};}
+  return null;}
+function bindReach(){app.querySelectorAll("[data-rk]").forEach(b=>b.onclick=()=>{app.querySelectorAll("[data-rk]").forEach(x=>x.classList.toggle("on",x===b));
+  const i=$("#rc"),t=b.dataset.rk==="tel";i.type=t?"tel":"email";i.autocomplete=t?"tel":"email";i.inputMode=t?"tel":"email";i.placeholder=t?"+1 555 010 0123":"you@example.com";i.value="";i.focus();
+  const h=$("#rh");if(h)h.textContent=hint();});}
+const hint=()=>{const t=app.querySelector(".rk .on")?.dataset.rk==="tel";return D.g?`${D.n||"The organiser"} picks the time that suits everyone, and you'll get it ${t?"by text":"by email"}.`
+  :`You'll get the invite ${t?"by text":"by email"} once ${D.n||"they"} confirm${D.n?"s":""}.`;};
+const reachLine=r=>`Reach me at: ${r.v}`, reachCode=r=>`YK-REACH v1 ${r.k==="tel"?"tel":"email"}=${r.v}`;
+
 // ------------------------------------------------------------------ a group: everyone marks the times that work
 const MINE=new Set();
 function drawGroup(){
@@ -239,13 +261,14 @@ function drawGroup(){
   const at={};C.forEach(c=>{at[dkey(c.t)+"|"+mins(c.t)]=c;});
   const any=C.some(c=>!c.busy);
   app.innerHTML=`<div class="cols group">
-    <div class="c-head">${YOLKS()}<h1>${esc(D.t||"Find a time")}</h1>
-      <p class="sub">Mark every time that works for you. The time that suits the most people wins.</p>${meta()}</div>
+    <div class="c-head"><h1>${esc(D.t||"Find a time")}</h1>
+      <p class="sub">Mark every time that works for you. ${matchMedia("(pointer:fine)").matches?"Drag to mark many at once.":"Tap a day or a time to mark the whole row."}</p>${meta()}</div>
     <form id="f" class="c-form glass" ${any?"":"hidden"}><label for="nm">Your name</label><input id="nm" autocomplete="name" maxlength="60" required placeholder="So everyone knows it's you">
+      ${REACH()}
       <div class="legend"><span><i></i>Works for you</span><span><i class="f"></i>Open</span><span><i class="b"></i>Not free</span></div>
       <p class="count" id="cnt"></p>
       <button class="go" id="go" type="submit"></button>
-      <p class="hint">${matchMedia("(pointer:fine)").matches?"Drag across the grid to mark many at once. ":"Tap a day or a time to mark the whole row. "}Nothing is sent until you tap Send in your email.</p></form>
+      <p class="hint" id="rh"></p></form>
     <div class="c-cal">${any?`<div class="grid glass"><table style="--nd:${days.length}"><thead><tr><th class="tmh"></th>${days.map(k=>`<th><button type="button" class="lnk" data-dayall="${esc(k)}" style="padding:0;color:inherit;font:inherit">${esc(df(k,{weekday:"short"}))}<b>${new Date(k).getDate()}</b></button></th>`).join("")}</tr></thead>
       <tbody>${rows.map(m=>`<tr class="${m%60?"":"hr"}"><td class="tm">${m%60?"":`<button type="button" class="lnk" data-rowall="${m}" style="padding:0;color:inherit;font:inherit">${esc(new Date(2000,0,1,Math.floor(m/60)).toLocaleTimeString(undefined,{hour:"numeric"}))}</button>`}</td>${days.map(k=>{const c=at[k+"|"+m];
         return `<td><button type="button" class="cell ${!c?"none":c.busy?"busy":MINE.has(c.t)?"on":""}" ${c&&!c.busy?`data-c="${c.t}" aria-pressed="${MINE.has(c.t)}"`:"disabled"}
@@ -271,24 +294,26 @@ function drawGroup(){
   app.querySelectorAll("[data-rowall]").forEach(h=>h.onclick=()=>all([...app.querySelectorAll("[data-c]")].filter(b=>{const x=new Date(+b.dataset.c);return x.getHours()*60+x.getMinutes()===+h.dataset.rowall;}).map(b=>`[data-c="${b.dataset.c}"]`).join(",")||"#none"));
   const nm=$("#nm");if(nm)try{nm.value=sessionStorage.getItem("yk-name")||"";}catch{}
   const f=$("#f"); if(f) f.onsubmit=e=>{e.preventDefault();sendGroup();};
-  const dg=$("#dgo"); if(dg) dg.onclick=()=>{if(!$("#nm").value.trim()){$("#nm").scrollIntoView({behavior:"smooth",block:"center"});$("#nm").focus();return;}sendGroup();};
+  bindReach();const rh=$("#rh");if(rh)rh.textContent=hint();
+  const dg=$("#dgo"); if(dg) dg.onclick=()=>{const miss=!$("#nm").value.trim()?$("#nm"):!reach()?$("#rc"):null;if(miss){miss.scrollIntoView({behavior:"smooth",block:"center"});miss.focus();return;}sendGroup();};
   count();
 }
-function groupMail(name){
+function groupMail(name,r){
   const ts=[...MINE].sort((a,b)=>a-b), b36=n=>n.toString(36);
   const byDay={};ts.forEach(t=>{const k=df(t);(byDay[k]=byDay[k]||[]).push(tf(t));});
   const subject=`${D.t||"Finding a time"}: ${name}'s times`;
-  const body=`Hi${D.n?" "+D.n:""},\n\nThese times work for ${name} (${dur()}${where()?", "+where():""}):\n${Object.entries(byDay).map(([k,v])=>`${k}: ${v.join(", ")}`).join("\n")}\n\nSent from your group link.\nYK-POLL v1 k=${D.k} d=${D.m} at=${ts.map(t=>b36(Math.round(t/60000)-D.s)).join(".")} name=${name}\n`;
+  const body=`Hi${D.n?" "+D.n:""},\n\nThese times work for ${name} (${dur()}${where()?", "+where():""}):\n${Object.entries(byDay).map(([k,v])=>`${k}: ${v.join(", ")}`).join("\n")}\n${reachLine(r)}\n\nSent from your group link.\nYK-POLL v1 k=${D.k} d=${D.m} at=${ts.map(t=>b36(Math.round(t/60000)-D.s)).join(".")} name=${name}\n${reachCode(r)}\n`;
   return {subject,body};
 }
 function sendGroup(){
   const name=$("#nm").value.replace(/[\r\n]+/g," ").trim().slice(0,60);
   if(!name){$("#nm").focus();return;}
+  const r=reach();if(!r){$("#rc").focus();$("#rc").select?.();return;}
   if(!MINE.size)return;
   try{sessionStorage.setItem("yk-name",name);}catch{}
-  const {subject,body}=groupMail(name);
+  const {subject,body}=groupMail(name,r);
   location.href=mailto(subject,body);
-  app.innerHTML=`<div class="cols"><div class="c-head">${YOLKS()}<h1>Almost done</h1></div>
+  app.innerHTML=`<div class="cols"><div class="c-head"><h1>Almost done</h1></div>
     <div class="c-cal"><div class="done glass"><h2>Tap Send in your email</h2><p>Once everyone has answered, you'll get an invite for the time that works best.</p>
     <p style="margin-top:16px">Email didn't open? Send this to <b>${esc(D.e)}</b>:</p><pre>${esc(subject)}\n\n${esc(body)}</pre>
     <button class="lnk" id="back">Change my times</button></div></div></div>`;
@@ -304,37 +329,41 @@ function draw(){
   if(!day||!days.includes(day)) day=days[0]||"";
   const today=S.filter(t=>dkey(t)===day);
   const nm=$("#nm")?.value||"", nt=$("#nt")?.value||"";
+  if($("#rc"))try{sessionStorage.setItem("yk-rk",app.querySelector(".rk .on")?.dataset.rk||"email");sessionStorage.setItem("yk-rc",$("#rc").value);}catch{}
   app.innerHTML=`<div class="cols">
-    <div class="c-head">${YOLKS()}<h1>Find a time with ${esc(who)}</h1><p class="sub">Pick a time that works for you.</p>${meta()}</div>
+    <div class="c-head"><h1>Find a time with ${esc(who)}</h1><p class="sub">Pick a time that works for you.</p>${meta()}</div>
     <div class="c-cal">${days.length?`<div class="mon">${esc(df(day,{month:"long",year:"numeric"}))}</div><div class="days">${days.map(k=>`<button class="day ${k===day?"on":""}" data-day="${esc(k)}"><small>${esc(df(k,{weekday:"short"}))}</small><b>${new Date(k).getDate()}</b></button>`).join("")}</div>
       <div class="slots glass">${today.map(t=>`<button class="slot ${t===pick?"on":""}" data-t="${t}">${tf(t)}</button>`).join("")}</div>${tzNote()}`
       :`<div class="none glass">No free times left on this link. Ask ${esc(who)} for a new one.</div>`}</div>
     ${days.length?`<form id="f" class="c-form glass"><label for="nm">Your name</label><input id="nm" autocomplete="name" maxlength="60" required>
-      <label for="nt">Anything to add? (optional)</label><textarea id="nt" maxlength="500"></textarea>
+      ${REACH()}
+      <label for="nt">Anything to add? (optional)</label><textarea id="nt" maxlength="500" rows="2"></textarea>
       <button class="go" id="go" ${pick?"":"disabled"}>${pick?`Request ${esc(df(pick))}, ${esc(tf(pick))}`:"Pick a time"}</button>
-      <p class="hint">${esc(who)} gets your request by email, and the invite comes back to you.</p></form>`:""}</div>`;
+      <p class="hint" id="rh"></p></form>`:""}</div>`;
   const n=$("#nm");if(n){n.value=nm||(()=>{try{return sessionStorage.getItem("yk-name")||"";}catch{return "";}})();$("#nt").value=nt;}
   app.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{day=b.dataset.day;pick=0;draw();});
   app.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{pick=+b.dataset.t;draw();
     const f=$("#f");if(f&&!matchMedia("(min-width:900px)").matches)f.scrollIntoView({behavior:"smooth",block:"center"});
     const nn=$("#nm");if(nn&&!nn.value)nn.focus({preventScroll:true});});
   const f=$("#f"); if(f) f.onsubmit=e=>{e.preventDefault();send();};
+  bindReach();const rh=$("#rh");if(rh)rh.textContent=hint();
   agents();
 }
-function oneMail(name,note){
+function oneMail(name,note,r){
   const when=new Date(pick).toLocaleString(undefined,{weekday:"long",month:"long",day:"numeric",hour:"numeric",minute:"2-digit",timeZoneName:"short"});
   const subject=`Meeting request: ${name} · ${df(pick)}`;
-  const body=`Hi${D.n?" "+D.n:""},\n\n${name} would like to meet on ${when} (${dur()}${where()?", "+where():""}).${note?"\n\n"+note:""}\n\nSent from your free-times link.\nYK-BOOK v1 k=${D.k} at=${Math.round(pick/1000)} d=${D.m} name=${name}\n`;
+  const body=`Hi${D.n?" "+D.n:""},\n\n${name} would like to meet on ${when} (${dur()}${where()?", "+where():""}).${note?"\n\n"+note:""}\n${reachLine(r)}\n\nSent from your free-times link.\nYK-BOOK v1 k=${D.k} at=${Math.round(pick/1000)} d=${D.m} name=${name}\n${reachCode(r)}\n`;
   return {subject,body};
 }
 function send(){
   const name=$("#nm").value.replace(/[\r\n]+/g," ").trim().slice(0,60), note=$("#nt").value.trim().slice(0,500);
   if(!name){$("#nm").focus();return;}
+  const r=reach();if(!r){$("#rc").focus();return;}
   if(!pick)return;
   try{sessionStorage.setItem("yk-name",name);}catch{}
-  const {subject,body}=oneMail(name,note);
+  const {subject,body}=oneMail(name,note,r);
   location.href=mailto(subject,body);
-  app.innerHTML=`<div class="cols"><div class="c-head">${YOLKS()}<h1>Almost done</h1></div>
+  app.innerHTML=`<div class="cols"><div class="c-head"><h1>Almost done</h1></div>
     <div class="c-cal"><div class="done glass"><h2>Tap Send in your email</h2><p>Once it's sent, ${esc(D.n||"they")} will get it and the invite comes back to you.</p>
     <p style="margin-top:16px">Email didn't open? Send this to <b>${esc(D.e)}</b>:</p><pre>${esc(subject)}\n\n${esc(body)}</pre>
     <button class="lnk" id="back">Pick another time</button></div></div></div>`;
@@ -349,13 +378,18 @@ function agents(){
   const iso=t=>new Date(t).toISOString().replace(/\.\d+Z$/,"Z");
   const info={kind:D.g?"group-poll":"one-booking",title:D.t||(D.n?`Meeting with ${D.n}`:"Meeting"),minutes:D.m,where:where()||null,
     reply_to:D.e,free_times_utc:free.map(iso),
-    how_to_answer:D.g?`Email ${D.e}. Put this line in the body: YK-POLL v1 k=${D.k} d=${D.m} at=<times> name=<their name>, where <times> are the chosen times as minutes after ${D.s} (the link's start, in minutes since 1970 UTC), in base 36, joined with dots.`
-      :`Email ${D.e}. Put this line in the body: YK-BOOK v1 k=${D.k} at=<the chosen time in seconds since 1970 UTC> d=${D.m} name=<their name>.`};
+    how_to_answer:D.g?`Email ${D.e}. Put this line in the body: YK-POLL v1 k=${D.k} d=${D.m} at=<times> name=<their name>, and on the next line YK-REACH v1 email=<their email> (or tel=<their phone>), where <times> are the chosen times as minutes after ${D.s} (the link's start, in minutes since 1970 UTC), in base 36, joined with dots.`
+      :`Email ${D.e}. Put this line in the body: YK-BOOK v1 k=${D.k} at=<the chosen time in seconds since 1970 UTC> d=${D.m} name=<their name>, and on the next line YK-REACH v1 email=<their email> (or tel=<their phone>).`};
   $("#yk-agent").textContent=JSON.stringify(info);
   $("#agentTxt").innerHTML=`${D.g?"This is a group poll":"This is a booking page"} for “${esc(info.title)}”, ${esc(dur())}${info.where?", "+esc(info.where):""}. ${free.length} free time${free.length===1?"":"s"} are listed in the JSON in <code>#yk-agent</code> (UTC). To answer for your person: ${esc(info.how_to_answer)} Nothing else is needed; the organiser's Yolkee checks the time and sends the invite.`;
 }
 
-document.getElementById("wmY").innerHTML=YOLKS();document.getElementById("prY").innerHTML=YOLKS();
+document.getElementById("wmY").innerHTML=YOLKS();
+// what made this page sits in the layout, under the form, so it's on the same screen as the times
+// (on a wide screen: right under the calendar; on a phone: after everything you fill in)
+const PROMO=$(".promo"),WIDE=matchMedia("(min-width:900px)");
+const putPromo=()=>{const c=app.querySelector(WIDE.matches?".c-cal":".cols")||app.querySelector(".cols");if(c&&PROMO.parentNode!==c)c.appendChild(PROMO);};
+new MutationObserver(putPromo).observe(app,{childList:true});WIDE.addEventListener?.("change",putPromo);
 if(!matchMedia("(prefers-reduced-motion: reduce)").matches)addEventListener("pointermove",e=>{document.querySelectorAll("svg.yolk").forEach(y=>{
   const r=y.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height*.52),d=Math.hypot(dx,dy)||1,k=Math.min(1,d/320);
   y.querySelectorAll(".gaze").forEach(g=>g.style.transform=`translate(${(dx/d*4*k).toFixed(2)}px,${(dy/d*3*k).toFixed(2)}px)`);});});
