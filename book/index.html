@@ -129,7 +129,7 @@ tr.hr td{padding-top:4px}
 .promo .glass::before{content:"";position:absolute;inset:-50% -30% auto auto;width:220px;height:220px;border-radius:50%;
   background:radial-gradient(circle,rgba(255,194,27,.26),transparent 70%);pointer-events:none}
 .promo small{display:block;font:500 12.5px/1 var(--font);color:var(--ink2);margin-bottom:5px}
-.promo h2{margin:0;font:600 17px/1.2 var(--font);letter-spacing:-.015em}
+.promo h2{margin:0;font:600 19px/1.2 var(--font);letter-spacing:-.02em;text-wrap:balance}
 .promo p{color:var(--ink2);margin:8px 0 0;font-size:14px;line-height:1.45}
 .promo ul{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}
 .promo li{display:flex;gap:8px;align-items:center;font-size:13.5px;line-height:1.3}
@@ -142,13 +142,16 @@ tr.hr td{padding-top:4px}
 .btn.main{background:var(--ink);color:var(--paper)}
 .btn.ghost{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
 .btn svg{width:15px;height:15px;fill:currentColor}
+.promo .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.promo .tags span{font:500 12px/1 var(--font);color:var(--ink2);padding:6px 9px;border-radius:12px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.promo .tags span:first-child{color:#1d8a3a;background:rgba(52,199,89,.12);box-shadow:none}
 .fine{color:var(--ink3);font-size:12px;margin:10px 2px 0;line-height:1.4}
 @media (min-width:900px){
-  .grid{max-height:max(380px,calc(100vh - 360px))}
+  .grid{max-height:max(380px,calc(100vh - 380px))}
   .c-cal .promo{margin-top:16px}
   .c-cal .promo .glass{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 24px;align-items:center;padding:16px 20px}
   .c-cal .promo .glass>*{grid-column:1}.c-cal .promo .acts{grid-column:2;grid-row:1/span 4;margin:0;flex-direction:column;align-items:stretch}
-  .c-cal .promo p{margin-top:4px}.c-cal .promo ul{display:flex;flex-wrap:wrap;gap:6px 16px}.c-cal .promo .fine{margin-top:8px}
+  .c-cal .promo p{margin-top:4px}.c-cal .promo ul{display:grid;grid-template-columns:1fr 1fr;gap:7px 16px}.c-cal .promo .acts{grid-row:1/span 5}.c-cal .promo .fine{margin-top:8px}
 }
 /* for someone's AI assistant reading this page: what's free and how to answer */
 .agents{margin-top:18px;padding-bottom:calc(env(safe-area-inset-bottom) + 40px)}
@@ -170,13 +173,15 @@ tr.hr td{padding-top:4px}
   <a class="get" href="https://yolkee.dev/#get">Get Yolkee</a></header>
 <main id="app" class="wrap"><p class="sub">Loading…</p></main>
 <aside class="promo" aria-label="About Yolkee"><div class="glass">
-  <small id="prWho">Made with Yolkee</small><h2>Your first personal AI agent</h2>
-  <p><span id="prFound">Yolkee found these free times and made this page.</span></p>
+  <small id="prWho">Made with Yolkee</small><h2>The open-source agent that runs on your Mac</h2>
+  <p><span id="prFound">Yolkee found these free times and made this page in seconds.</span> Yours can do the same, and much more.</p>
   <ul>
-    <li><i style="background:#0a84ff"><svg viewBox="0 0 24 24"><path d="M4 7h16v11H4z M4 7l8 6 8-6"/></svg></i>Sorts your mail and drafts the replies</li>
-    <li><i style="background:#bf5af2"><svg viewBox="0 0 24 24"><path d="M5 6h14v13H5z M5 10h14 M9 4v4 M15 4v4"/></svg></i>Finds a time with anyone, and sends the invite</li>
-    <li><i style="background:#34c759"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i>Asks you before it sends, buys or pays</li>
+    <li><i style="background:#bf5af2"><svg viewBox="0 0 24 24"><path d="M5 6h14v13H5z M5 10h14 M9 4v4 M15 4v4"/></svg></i>Finds a time and sends the invite</li>
+    <li><i style="background:#0a84ff"><svg viewBox="0 0 24 24"><path d="M4 7h16v11H4z M4 7l8 6 8-6"/></svg></i>Sorts mail and drafts replies</li>
+    <li><i style="background:#ff9f0a"><svg viewBox="0 0 24 24"><path d="M12 4a5 5 0 0 1 5 5v3.5l1.5 3H5.5l1.5-3V9a5 5 0 0 1 5-5z M10 19a2 2 0 0 0 4 0"/></svg></i>Flags pickups, bills and deadlines</li>
+    <li><i style="background:#34c759"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i>Asks before it sends, buys or pays</li>
   </ul>
+  <div class="tags"><span>Free</span><span>Open source</span><span>Your data stays on your Mac</span></div>
   <div class="acts"><a class="btn main" href="https://yolkee.dev/#get"><svg viewBox="0 0 24 24"><path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.3c.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.5-.9-2.5-3.7zM14.1 5.6c.6-.8 1.1-1.9 1-3-1 0-2.1.6-2.8 1.4-.6.7-1.1 1.8-1 2.9 1.1.1 2.1-.5 2.8-1.3z"/></svg>Get Yolkee for Mac</a>
     <a class="btn ghost" href="https://yolkee.dev/#day">See how it works</a></div>
 </div></aside>
@@ -396,7 +401,7 @@ if(!matchMedia("(prefers-reduced-motion: reduce)").matches)addEventListener("poi
   const r=y.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height*.52),d=Math.hypot(dx,dy)||1,k=Math.min(1,d/320);
   y.querySelectorAll(".gaze").forEach(g=>g.style.transform=`translate(${(dx/d*4*k).toFixed(2)}px,${(dy/d*3*k).toFixed(2)}px)`);});});
 read().then(d=>{D=d;
-  if(d.n&&!d.g){$("#prWho").textContent=`${d.n} uses Yolkee`;$("#prFound").textContent=`${d.n}’s Yolkee found these free times and made this page.`;}
+  if(d.n&&!d.g){$("#prWho").textContent=`${d.n} uses Yolkee`;$("#prFound").textContent=`${d.n}’s Yolkee found these free times and made this page in seconds.`;}
   if(d.g)return drawGroup();S=slots(d);draw();}).catch(e=>fail(e.message||"This link doesn't work. Ask for a new one."));
 </script>
 </body>
