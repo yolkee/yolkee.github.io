@@ -170,16 +170,15 @@ tr.hr td{padding-top:4px}
   <a class="get" href="https://yolkee.dev/#get">Get Yolkee</a></header>
 <main id="app" class="wrap"><p class="sub">Loading…</p></main>
 <aside class="promo" aria-label="About Yolkee"><div class="glass">
-  <small id="prWho">Made with Yolkee</small><h2>Your own AI assistant, on your Mac</h2>
-  <p><span id="prFound">Yolkee found these free times</span> and put only the busy blocks in this link: no titles, places or people.</p>
+  <small id="prWho">Made with Yolkee</small><h2>Your first personal AI agent</h2>
+  <p><span id="prFound">Yolkee found these free times and made this page.</span></p>
   <ul>
     <li><i style="background:#0a84ff"><svg viewBox="0 0 24 24"><path d="M4 7h16v11H4z M4 7l8 6 8-6"/></svg></i>Sorts your mail and drafts the replies</li>
     <li><i style="background:#bf5af2"><svg viewBox="0 0 24 24"><path d="M5 6h14v13H5z M5 10h14 M9 4v4 M15 4v4"/></svg></i>Finds a time with anyone, and sends the invite</li>
     <li><i style="background:#34c759"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i>Asks you before it sends, buys or pays</li>
   </ul>
   <div class="acts"><a class="btn main" href="https://yolkee.dev/#get"><svg viewBox="0 0 24 24"><path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.3c.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.5-.9-2.5-3.7zM14.1 5.6c.6-.8 1.1-1.9 1-3-1 0-2.1.6-2.8 1.4-.6.7-1.1 1.8-1 2.9 1.1.1 2.1-.5 2.8-1.3z"/></svg>Get Yolkee for Mac</a>
-    <a class="btn ghost" href="https://yolkee.dev">How it works</a></div>
-  <p class="fine">Free and open source. No account, no Yolkee server.</p>
+    <a class="btn ghost" href="https://yolkee.dev/#day">See how it works</a></div>
 </div></aside>
 <section class="agents" aria-label="For AI assistants"><details><summary>For AI assistants</summary><p class="txt" id="agentTxt"></p></details></section>
 <script type="application/json" id="yk-agent">{}</script>
@@ -248,7 +247,7 @@ function bindReach(){app.querySelectorAll("[data-rk]").forEach(b=>b.onclick=()=>
   const i=$("#rc"),t=b.dataset.rk==="tel";i.type=t?"tel":"email";i.autocomplete=t?"tel":"email";i.inputMode=t?"tel":"email";i.placeholder=t?"+1 555 010 0123":"you@example.com";i.value="";i.focus();
   const h=$("#rh");if(h)h.textContent=hint();});}
 const hint=()=>{const t=app.querySelector(".rk .on")?.dataset.rk==="tel";return D.g?`${D.n||"The organiser"} picks the time that suits everyone, and you'll get it ${t?"by text":"by email"}.`
-  :`You'll get the invite ${t?"by text":"by email"} once ${D.n||"they"} confirm${D.n?"s":""}.`;};
+  :`The invite comes to you ${t?"by text":"by email"}.`;};
 const reachLine=r=>`Reach me at: ${r.v}`, reachCode=r=>`YK-REACH v1 ${r.k==="tel"?"tel":"email"}=${r.v}`;
 
 // ------------------------------------------------------------------ a group: everyone marks the times that work
@@ -338,7 +337,7 @@ function draw(){
     ${days.length?`<form id="f" class="c-form glass"><label for="nm">Your name</label><input id="nm" autocomplete="name" maxlength="60" required>
       ${REACH()}
       <label for="nt">Anything to add? (optional)</label><textarea id="nt" maxlength="500" rows="2"></textarea>
-      <button class="go" id="go" ${pick?"":"disabled"}>${pick?`Request ${esc(df(pick))}, ${esc(tf(pick))}`:"Pick a time"}</button>
+      <button class="go" id="go" ${pick?"":"disabled"}>${pick?`Confirm ${esc(df(pick))}, ${esc(tf(pick))}`:"Pick a time"}</button>
       <p class="hint" id="rh"></p></form>`:""}</div>`;
   const n=$("#nm");if(n){n.value=nm||(()=>{try{return sessionStorage.getItem("yk-name")||"";}catch{return "";}})();$("#nt").value=nt;}
   app.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{day=b.dataset.day;pick=0;draw();});
@@ -351,7 +350,7 @@ function draw(){
 }
 function oneMail(name,note,r){
   const when=new Date(pick).toLocaleString(undefined,{weekday:"long",month:"long",day:"numeric",hour:"numeric",minute:"2-digit",timeZoneName:"short"});
-  const subject=`Meeting request: ${name} · ${df(pick)}`;
+  const subject=`Meeting: ${name} · ${df(pick)}`;
   const body=`Hi${D.n?" "+D.n:""},\n\n${name} would like to meet on ${when} (${dur()}${where()?", "+where():""}).${note?"\n\n"+note:""}\n${reachLine(r)}\n\nSent from your free-times link.\nYK-BOOK v1 k=${D.k} at=${Math.round(pick/1000)} d=${D.m} name=${name}\n${reachCode(r)}\n`;
   return {subject,body};
 }
@@ -394,7 +393,7 @@ if(!matchMedia("(prefers-reduced-motion: reduce)").matches)addEventListener("poi
   const r=y.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height*.52),d=Math.hypot(dx,dy)||1,k=Math.min(1,d/320);
   y.querySelectorAll(".gaze").forEach(g=>g.style.transform=`translate(${(dx/d*4*k).toFixed(2)}px,${(dy/d*3*k).toFixed(2)}px)`);});});
 read().then(d=>{D=d;
-  if(d.n&&!d.g){$("#prWho").textContent=`${d.n} uses Yolkee`;$("#prFound").textContent=`${d.n}’s Yolkee found these free times`;}
+  if(d.n&&!d.g){$("#prWho").textContent=`${d.n} uses Yolkee`;$("#prFound").textContent=`${d.n}’s Yolkee found these free times and made this page.`;}
   if(d.g)return drawGroup();S=slots(d);draw();}).catch(e=>fail(e.message||"This link doesn't work. Ask for a new one."));
 </script>
 </body>
