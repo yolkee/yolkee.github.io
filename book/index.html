@@ -218,15 +218,18 @@ async function read(){
 // every slot in the link's window, busy ones marked: one person sees only the free ones, a group sees both
 function cells(d){
   const M=60000, s=d.s*M, end=(d.s+d.x)*M, step=Math.min(30,d.m)*M, len=d.m*M;
-  const raw=(d.b?d.b.split(","):[]).map(x=>parseInt(x,36));
+  // busy: a grid of half hours from the start ("q", hex, one bit each), or, in older links, minute pairs ("b")
+  const H=30*M, grid=new Set(); if(d.q)for(let i=0;i<d.q.length;i++){const v=parseInt(d.q[i],16);for(let j=0;j<4;j++)if(v&(8>>j))grid.add(i*4+j);}
+  const raw=(!d.q&&d.b?d.b.split(","):[]).map(x=>parseInt(x,36));
   const busy=[]; for(let i=0;i+1<raw.length;i+=2) busy.push([s+raw[i]*M,s+raw[i+1]*M]);
+  const isBusy=t=>{if(d.q){for(let i=Math.floor((t-s)/H);i*H+s<t+len;i++)if(grid.has(i))return true;return false;}return busy.some(([x,y])=>x<t+len&&y>t);};
   const tz=d.tz||undefined, fmt=new Intl.DateTimeFormat("en-US",{timeZone:tz,hour12:false,hour:"2-digit",minute:"2-digit",weekday:"short"});
   const ownerTime=t=>{const p=Object.fromEntries(fmt.formatToParts(new Date(t)).map(x=>[x.type,x.value]));return {min:(+p.hour%24)*60+(+p.minute),wd:p.weekday};};
   const out=[]; let t=Math.max(s,Math.ceil((Date.now()+60*M)/(30*M))*30*M);
   for(;t+len<=end;t+=step){const a=ownerTime(t);
     if(a.min<d.h[0]*60||a.min+d.m>d.h[1]*60) continue;
     if(!d.w&&(a.wd==="Sat"||a.wd==="Sun")) continue;
-    out.push({t,busy:busy.some(([x,y])=>x<t+len&&y>t)});}
+    out.push({t,busy:isBusy(t)});}
   return out;
 }
 const slots=d=>cells(d).filter(c=>!c.busy).map(c=>c.t);
