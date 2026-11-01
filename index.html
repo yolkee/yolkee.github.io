@@ -1373,9 +1373,9 @@ button,input,select,textarea{font-family:inherit}
     <div class="privr">
       <div class="pv fpan g-teal" id="pv"><div class="pv-row" aria-hidden="true">
         <div class="pv-home"><span class="pv-tag">Your devices</span>
-          <div class="pv-dev"><div class="pv-ph"><i></i><div class="pv-scr"><span data-y="24" data-c="rainbow"></span><b></b><b class="s"></b><b></b></div></div><small>iPhone</small></div>
+          <div class="pv-dev"><div class="pv-ph"><i></i><div class="pv-scr"><span data-y="24"></span><b></b><b class="s"></b><b></b></div></div><small>iPhone</small></div>
           <div class="pv-link l1"><span class="pv-badge"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="2" fill="currentColor"/><path d="M5.2 7V5.3a2.8 2.8 0 0 1 5.6 0V7" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>Encrypted</span><em class="pk"></em></div>
-          <div class="pv-dev"><div class="pv-mac"><div class="pv-disp"><span data-y="40" data-s="happy" data-c="rainbow"></span><span class="pv-chips"><i>yolkee.db</i><i>identity/</i><i>Keychain</i></span></div><div class="pv-base"></div></div><small>Mac · where your data lives</small></div>
+          <div class="pv-dev"><div class="pv-mac"><div class="pv-disp"><span data-y="40" data-s="happy"></span><span class="pv-chips"><i>yolkee.db</i><i>identity/</i><i>Keychain</i></span></div><div class="pv-base"></div></div><small>Mac · where your data lives</small></div>
         </div>
         <div class="pv-link l2"><span class="pv-badge alt">Stand-ins only</span><em class="pk"></em></div>
         <div class="pv-dev pv-cloud"><svg viewBox="0 0 120 78"><path d="M32 70h62a20 20 0 0 0 2-40 28 28 0 0 0-53-6 20 20 0 0 0-11 46z" fill="#fff" fill-opacity=".92"/><circle cx="50" cy="48" r="5" fill="#d97757"/><circle cx="66" cy="48" r="5" fill="#10a37f"/><circle cx="82" cy="48" r="5" fill="#4285f4"/></svg><small>Cloud AI</small></div>
@@ -1535,7 +1535,7 @@ const COLORS={   // the app's own palette (Profile → Color), in its order
   rainbow:{name:"Rainbow",c:["#ffd1dc","#ffb86b","#7ed6a0","#7b8cff"],sh:"130,90,220",rainbow:["#ff6f8e","#ffa45e","#ffd54f","#72d39a","#5eaefc","#a283ff"]},
   gray:{name:"Gray",c:["#e1e4ea","#9aa2b0","#69727f","#525a66"],sh:"80,90,105"},
 };
-let pick="rainbow";   // the app starts rainbow
+let pick="yellow";   // the app starts yellow, a yolk
 function yolkee(size,state="idle",ck,keepId){
   const id=keepId||"o"+Math.random().toString(36).slice(2,8),P=COLORS[COLORS[ck]?ck:pick],C=P.c;
   return `<svg class="yolkee ${state}" width="${size}" height="${size}" viewBox="0 0 120 120" aria-hidden="true"><defs>
@@ -1592,7 +1592,7 @@ if(REPO){const api=REPO.replace("https://github.com/","https://api.github.com/re
     const people=list.filter(c=>c.type!=="Bot");
     cbrow.innerHTML=people.map(c=>`<a href="${c.html_url}" title="${c.login}"><img src="${c.avatar_url}&s=72" alt="${c.login}" loading="lazy" width="36" height="36"></a>`).join("")+youLink;
     document.getElementById("cbn").textContent=people.length+(people.length===1?" person":" people")+" so far";}).catch(()=>{});}
-const dmgFor=c=>c&&c!=="rainbow"?DMG.replace(/Yolkee\.dmg$/,`Yolkee-${c}.dmg`):DMG;   // one download per colour (release_colors.py)
+const dmgFor=c=>c&&c!=="yellow"?DMG.replace(/Yolkee\.dmg$/,`Yolkee-${c}.dmg`):DMG;   // one download per colour (release_colors.py)
 document.querySelectorAll("a.dl").forEach(a=>{if(DMG){a.href=dmgFor(pick);a.addEventListener("click",()=>{a.href=dmgFor(pick);});}
   else a.addEventListener("click",e=>{e.preventDefault();});});
 // until launch, the main buttons say so right beside them
