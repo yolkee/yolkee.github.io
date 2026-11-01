@@ -1580,7 +1580,7 @@ const SITE_LINKS={"a.gh":"","a.gh-sec":"/blob/main/SECURITY.md","a.lk-contrib":"
   "a.lk-changes":"/releases","a.lk-readme":"#readme","a.lk-bug":"/issues/new?template=bug.yml","a.lk-idea":"/issues/new?template=idea.yml","a.lk-coc":"/blob/main/CODE_OF_CONDUCT.md","a.lk-notice":"/blob/main/NOTICE","#ver":"/releases","[data-k=roadmap]":"/blob/main/docs/ROADMAP.md","a.lk-docs":"/tree/main/docs"};
 if(REPO)for(const [sel,path] of Object.entries(SITE_LINKS))document.querySelectorAll(sel).forEach(a=>a.href=REPO+path);
 // until then a link that would go to GitHub stays put (only the menu's "Open source" scrolls to its section)
-else document.addEventListener("click",e=>{const a=e.target.closest('a[href="#open"]');if(a&&!a.classList.contains("lk-cb"))e.preventDefault();},true);
+else document.addEventListener("click",e=>{const a=e.target.closest('a[href="#open"]');if(a&&!a.classList.contains("lk-cb")&&!a.closest(".pnav"))e.preventDefault();},true);   // the page index always goes to its page
 if(DOCS)document.querySelectorAll("a.lk-docs").forEach(a=>a.href=DOCS);
 if(CHAT)document.querySelectorAll("a.chat,a.lk-chat").forEach(a=>{a.href=CHAT;a.hidden=false;});
 // stars, latest version and contributors come from GitHub once the repo is public; until then the page shows placeholders
@@ -1986,6 +1986,15 @@ if("IntersectionObserver" in window){const shown={};const io=new IntersectionObs
 else at("top");
 function byScroll(){if(document.documentElement.scrollHeight<=innerHeight+2)return;topEl.classList.toggle("away",!pages.some(p=>Math.abs(p.getBoundingClientRect().top)<8));const m=innerHeight/2;let cur=pages[0].id;for(const p of pages)if(p.getBoundingClientRect().top<=m)cur=p.id;at(cur);}
 addEventListener("scroll",byScroll,{passive:true});byScroll();
+// a short screen (a laptop with the browser's bars, a small window): a page whose content is taller than the
+// screen is shrunk to fit, instead of having its top or bottom cut off. Phones keep their own layout (pages grow).
+function fitPages(){if(!matchMedia("(min-width:900px)").matches){pages.forEach(p=>{const w=p.querySelector(".pw");if(w)w.style.zoom="";});return;}
+  pages.forEach(p=>{const w=p.querySelector(".pw");if(!w)return;w.style.zoom="";const cs=getComputedStyle(p);
+    const room=p.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+    const need=Math.max(w.scrollHeight,...[...w.children].map(c=>c.scrollHeight));
+    if(need>room+4)w.style.zoom=Math.max(.68,room/need).toFixed(3);});}
+fitPages();addEventListener("resize",()=>{clearTimeout(fitPages.t);fitPages.t=setTimeout(fitPages,150);});
+document.fonts?.ready?.then(fitPages);
 // every in-page link lands on the top of a whole page, also when the host frame does the scrolling
 document.addEventListener("click",e=>{const a=e.target.closest('a[href^="#"]');if(!a||e.defaultPrevented)return;const id=a.getAttribute("href").slice(1);
   let t=id?document.getElementById(id):null;if(!t)return;t=t.closest(".pg")||t;e.preventDefault();
